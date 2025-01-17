@@ -17,8 +17,25 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public ProductEntity getIdProduct(long id){
+    public ProductEntity getsIdProduct(long id){
         return productRepository.findById(id).orElse(null);
     }
 
+    public ProductEntity createsProduct(ProductEntity product){
+        return productRepository.save(product);
+    }
+
+    public ProductEntity updatesProduct(long id, ProductEntity product){
+        ProductEntity updatedProduct = productRepository.findById(id).get();
+        updatedProduct.setName(product.getName());
+        updatedProduct.setBrand(product.getBrand());
+        updatedProduct.setPrice(product.getPrice());
+        updatedProduct.setStock(product.getStock());
+        return productRepository.save(updatedProduct);
+    }
+
+    public void deletesProduct(long id){
+        ProductEntity deletedProduct = productRepository.findById(id).get();
+        productRepository.delete(deletedProduct);
+    }
 }

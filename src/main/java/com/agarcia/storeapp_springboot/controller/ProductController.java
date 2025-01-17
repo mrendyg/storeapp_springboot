@@ -20,35 +20,33 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/list")
+    @ResponseStatus(HttpStatus.OK)
     public List<ProductEntity> getListProduct(){
         return productService.getsListProduct();
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ProductEntity getIdProduct(@PathVariable long id){
-        return productService.getIdProduct(id);
+        return productService.getsIdProduct(id);
     }
 
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public ProductEntity createProduct(@RequestBody ProductEntity product){
-        return productRepository.save(product);
+        return productService.createsProduct(product);
     }
 
     @PutMapping("/update/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public ProductEntity updateProduct(@PathVariable long id, @RequestBody ProductEntity product){
-        ProductEntity updatedProduct = productRepository.findById(id).get();
-        updatedProduct.setName(product.getName());
-        updatedProduct.setBrand(product.getBrand());
-        updatedProduct.setPrice(product.getPrice());
-        updatedProduct.setStock(product.getStock());
-        return productRepository.save(updatedProduct);
+        return productService.updatesProduct(id, product);
     }
 
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable long id){
-        ProductEntity deletedProduct = productRepository.findById(id).get();
-        productRepository.delete(deletedProduct);
+        productService.deletesProduct(id);
     }
 
 }

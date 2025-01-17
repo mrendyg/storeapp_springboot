@@ -2,7 +2,9 @@ package com.agarcia.storeapp_springboot.controller;
 
 import com.agarcia.storeapp_springboot.persistence.entity.ClientEntity;
 import com.agarcia.storeapp_springboot.persistence.repository.ClientRepository;
+import com.agarcia.storeapp_springboot.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,33 +16,36 @@ public class ClientController {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private ClientService clientService;
+
     @GetMapping("/list")
+    @ResponseStatus(HttpStatus.OK)
     public List<ClientEntity> getListClient(){
-        return clientRepository.findAll();
+        return clientService.getsListClient();
     }
 
     @GetMapping("/{id}")
-    public ClientEntity getIdClient(@PathVariable long id){
-        return clientRepository.findById(id).orElse(null);
+    @ResponseStatus(HttpStatus.OK)
+    public ClientEntity getIdClient(@PathVariable long id) {
+        return clientService.getsIdClient(id);
     }
 
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public ClientEntity createClient(@RequestBody ClientEntity client){
-        return clientRepository.save(client);
+        return clientService.createsClient(client);
     }
 
     @PutMapping("/update/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public ClientEntity updateClient (@PathVariable long id, @RequestBody ClientEntity client){
-        ClientEntity updatedClient = clientRepository.findById(id).get();
-        updatedClient.setName(client.getName());
-        updatedClient.setLastName(client.getLastName());
-        updatedClient.setDni(client.getDni());
-        return clientRepository.save(updatedClient);
+        return clientService.updatesClient(id, client);
     }
 
     @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteClient(@PathVariable long id){
-        ClientEntity deletedClient = clientRepository.findById(id).get();
-        clientRepository.delete(deletedClient);
+        clientService.deletesClient(id);
     }
 }

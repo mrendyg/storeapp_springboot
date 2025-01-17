@@ -2,7 +2,9 @@ package com.agarcia.storeapp_springboot.controller;
 
 import com.agarcia.storeapp_springboot.persistence.entity.SaleEntity;
 import com.agarcia.storeapp_springboot.persistence.repository.SaleRepository;
+import com.agarcia.storeapp_springboot.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -14,38 +16,36 @@ import java.util.List;
 public class SaleController {
 
     @Autowired
-    private SaleRepository saleRepository;
+    private SaleService saleService;
 
     @GetMapping("/list")
+    @ResponseStatus(HttpStatus.OK)
     public List<SaleEntity> getListSales(){
-        return saleRepository.findAll();
+        return saleService.getsListSale();
     }
 
-    @GetMapping("/list/{id}")
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public SaleEntity getIdSale(@PathVariable long id){
-        return saleRepository.findById(id).orElse(null);
+        return saleService.getIdSale(id);
     }
 
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public SaleEntity createSale(@RequestBody SaleEntity sale){
-        sale.setDateSale(LocalDateTime.now());
-        return saleRepository.save(sale);
+        return saleService.createsSale(sale);
     }
 
     @PutMapping("/update/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public SaleEntity updateSale(@PathVariable long id, @RequestBody SaleEntity sale){
-        SaleEntity updatedSale = saleRepository.findById(id).get();
-        updatedSale.setClient(sale.getClient());
-        updatedSale.setTotal(sale.getTotal());
-        updatedSale.setListProduct(sale.getListProduct());
-        return saleRepository.save(updatedSale);
+        return saleService.updatesSale(id, sale);
     }
 
     @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSale(@PathVariable long id){
-        SaleEntity deletedSale = saleRepository.findById(id).get();
-        saleRepository.delete(deletedSale);
+        saleService.deletesSale(id);
     }
-
 
 }
