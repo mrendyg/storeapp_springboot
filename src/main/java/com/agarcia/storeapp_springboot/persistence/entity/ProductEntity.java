@@ -3,6 +3,8 @@ package com.agarcia.storeapp_springboot.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -18,9 +20,15 @@ public class ProductEntity {
     @Column(nullable = false)
     private String name;
 
-    private String brand;
     private int price;
     private int stock;
 
+    @ManyToMany
+    @JoinTable(
+            name = "brand_product",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "brand_id")
+    )
+    private List<BrandEntity> brand;
 
 }

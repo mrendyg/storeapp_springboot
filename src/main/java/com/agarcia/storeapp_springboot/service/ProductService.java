@@ -28,7 +28,6 @@ public class ProductService {
     public ProductEntity updatesProduct(long id, ProductEntity product){
         ProductEntity updatedProduct = productRepository.findById(id).get();
         updatedProduct.setName(product.getName());
-        updatedProduct.setBrand(product.getBrand());
         updatedProduct.setPrice(product.getPrice());
         updatedProduct.setStock(product.getStock());
         return productRepository.save(updatedProduct);
