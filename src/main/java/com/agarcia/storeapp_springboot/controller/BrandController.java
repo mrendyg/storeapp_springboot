@@ -14,35 +14,37 @@ import java.util.List;
 public class BrandController {
 
     @Autowired
-    private BrandRepository brandRepository;
-
-    @Autowired
     private BrandService brandService;
 
+    //Get List Brand
     @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
     public List<BrandEntity> getListBrand(){
         return brandService.getsListBrand();
     }
 
+    //Get brand by id
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public BrandEntity getIdBrand(@PathVariable long id){
         return brandService.getsIdBrand(id);
     }
 
+    //create new Brand
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public BrandEntity createBrand(@RequestBody BrandEntity brand){
         return brandService.createsBrand(brand);
     }
 
+    //update one brand by id
     @PutMapping("/update/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public BrandEntity updateBrand(@PathVariable long id, @RequestBody BrandEntity brand){
         return brandService.updatesBrand(id, brand);
     }
 
+    //delete one brand by id
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBrand(@PathVariable long id){
