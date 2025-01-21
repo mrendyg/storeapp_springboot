@@ -1,5 +1,6 @@
 package com.agarcia.storeapp_springboot.service;
 
+import com.agarcia.storeapp_springboot.persistence.entity.ProductEntity;
 import com.agarcia.storeapp_springboot.persistence.entity.SaleEntity;
 import com.agarcia.storeapp_springboot.persistence.repository.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,15 @@ public class SaleService {
     }
 
     public SaleEntity createsSale(SaleEntity sale){
+        List<ProductEntity> products = sale.getListProduct();
+        int totalPrice = 0;
+        for(ProductEntity product : products){
+            totalPrice += product.getPrice();
+            System.out.print(totalPrice);
+        }
+        sale.setTotal(totalPrice);
         sale.setDateSale(LocalDateTime.now());
+
         return saleRepository.save(sale);
     }
 
@@ -38,5 +47,14 @@ public class SaleService {
     public void deletesSale(long id){
         SaleEntity deletedSale = saleRepository.findById(id).get();
         saleRepository.delete(deletedSale);
+    }
+
+    //Get the list of products of this sale
+    public List<ProductEntity> getsDetailsProduct(long id){
+        SaleEntity sale = saleRepository.findById(id).orElse(null);
+        if (sale != null) {
+            return sale.getListProduct();
+        }
+        return null;
     }
 }

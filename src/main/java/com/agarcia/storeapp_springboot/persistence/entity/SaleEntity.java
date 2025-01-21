@@ -23,7 +23,6 @@ public class SaleEntity {
     private Long id;
 
     private LocalDateTime dateSale;
-    private int total;
 
     @ManyToMany
     @JoinTable(
@@ -32,6 +31,8 @@ public class SaleEntity {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private List<ProductEntity> listProduct;
+
+    private int total;
 
     @ManyToOne
     @JoinColumn(name = "client_id")

@@ -23,12 +23,7 @@ public class ProductEntity {
     private int price;
     private int stock;
 
-    @ManyToMany
-    @JoinTable(
-            name = "brand_product",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "brand_id")
-    )
-    private List<BrandEntity> brand;
+    @ManyToOne
+    private BrandEntity brand;
 
 }

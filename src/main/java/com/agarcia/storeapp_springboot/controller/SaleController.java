@@ -1,17 +1,22 @@
 package com.agarcia.storeapp_springboot.controller;
 
+import com.agarcia.storeapp_springboot.persistence.entity.ProductEntity;
 import com.agarcia.storeapp_springboot.persistence.entity.SaleEntity;
 import com.agarcia.storeapp_springboot.persistence.repository.SaleRepository;
 import com.agarcia.storeapp_springboot.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/sale")
 public class SaleController {
+
+    @Autowired
+    private SaleRepository saleRepository;
 
     @Autowired
     private SaleService saleService;
@@ -49,6 +54,12 @@ public class SaleController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSale(@PathVariable long id){
         saleService.deletesSale(id);
+    }
+
+    //Get the list of products of this sale
+    @GetMapping("/product-detail/{id}")
+    public List<ProductEntity> getListProductSale(@PathVariable long id){
+        return saleService.getsDetailsProduct(id);
     }
 
 }
