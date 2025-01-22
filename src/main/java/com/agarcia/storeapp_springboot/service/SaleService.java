@@ -22,9 +22,6 @@ public class SaleService {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private ClientRepository clientRepository;
-
 
     public List<SaleEntity> getsListSale(){
         return saleRepository.findAll();
