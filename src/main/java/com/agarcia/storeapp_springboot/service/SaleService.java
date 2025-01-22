@@ -1,13 +1,16 @@
 package com.agarcia.storeapp_springboot.service;
 
+import com.agarcia.storeapp_springboot.persistence.entity.ClientEntity;
 import com.agarcia.storeapp_springboot.persistence.entity.ProductEntity;
 import com.agarcia.storeapp_springboot.persistence.entity.SaleEntity;
+import com.agarcia.storeapp_springboot.persistence.repository.ClientRepository;
 import com.agarcia.storeapp_springboot.persistence.repository.ProductRepository;
 import com.agarcia.storeapp_springboot.persistence.repository.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,6 +18,12 @@ public class SaleService {
 
     @Autowired
     private SaleRepository saleRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private ClientRepository clientRepository;
 
 
     public List<SaleEntity> getsListSale(){
@@ -30,7 +39,15 @@ public class SaleService {
         /*Check stock discount*/
 
         //select the list
-        List<ProductEntity> products = sale.getListProduct();
+        // Lista de productos seleccionados a partir de los IDs proporcionados
+        List<ProductEntity> products = new ArrayList<>();
+
+        // Obtener los productos desde la base de datos usando solo el ID del producto
+        for (ProductEntity product : sale.getListProduct()) {
+            ProductEntity productFromDb = productRepository.findById(product.getId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+            products.add(productFromDb);
+        }
         //set total = 0 as base
         int totalPrice = 0;
         //addition price of each product
@@ -40,10 +57,15 @@ public class SaleService {
         //add total price
         sale.setTotal(totalPrice);
 
+        List<ProductEntity> updateProduct = new ArrayList<>();
+        for (ProductEntity product: products){
+            int removeProduct = product.getStock() - 1;
+            product.setStock(removeProduct);
+            productRepository.save(product);
+        }
+
         //add hours and date of creation time
         sale.setDateSale(LocalDateTime.now());
-
-
 
         return saleRepository.save(sale);
     }
