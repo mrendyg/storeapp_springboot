@@ -1,6 +1,7 @@
 package com.agarcia.storeapp_springboot.controller;
 
 import com.agarcia.storeapp_springboot.persistence.entity.BrandEntity;
+import com.agarcia.storeapp_springboot.persistence.repository.BrandRepository;
 import com.agarcia.storeapp_springboot.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

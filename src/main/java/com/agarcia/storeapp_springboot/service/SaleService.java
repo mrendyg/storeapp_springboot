@@ -23,32 +23,32 @@ public class SaleService {
     @Autowired
     private ProductRepository productRepository;
 
-    //List of sale
+    @Autowired
+    private ClientRepository clientRepository;
+
+
     public List<SaleEntity> getsListSale(){
         return saleRepository.findAll();
     }
 
-    //Get Sale by id
     public SaleEntity getIdSale(long id){
         return saleRepository.findById(id).orElse(null);
     }
 
-    //Create new sale
-    public SaleEntity
-    createsSale(SaleEntity sale){
+    public SaleEntity createsSale(SaleEntity sale){
 
-        // List of products selected from the IDs provided
+        /*Check stock discount*/
+
+        //select the list
+        // Lista de productos seleccionados a partir de los IDs proporcionados
         List<ProductEntity> products = new ArrayList<>();
 
-        //Get the product from the db using the product id
+        // Obtener los productos desde la base de datos usando solo el ID del producto
         for (ProductEntity product : sale.getListProduct()) {
-            ProductEntity productFromDb = productRepository.findById(product.getId()).orElse(null);
+            ProductEntity productFromDb = productRepository.findById(product.getId())
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
             products.add(productFromDb);
         }
-
-
-        //DEBO HACER UQ ECUANDO HAYA 0 STOCK NO PPERMITA LA VENTA DE ESE ITEM
-
         //set total = 0 as base
         int totalPrice = 0;
         //addition price of each product
@@ -58,16 +58,15 @@ public class SaleService {
         //add total price
         sale.setTotal(totalPrice);
 
-        //remove stock of product that are on the list in -1
         List<ProductEntity> updateProduct = new ArrayList<>();
         for (ProductEntity product: products){
-            if(product.getStock() >= 1){
+            if(product.getStock() <= 0){
+                System.out.println("The product " + product.getName() + " is out of stock");
+            }
+            else {
                 int removeProduct = product.getStock() - 1;
                 product.setStock(removeProduct);
                 productRepository.save(product);
-            }
-            else {
-                System.out.println(product.getName() + " Out stock");
             }
         }
 
@@ -78,7 +77,6 @@ public class SaleService {
         return saleRepository.save(sale);
     }
 
-    //Update sale by id
     public SaleEntity updatesSale(long id, SaleEntity sale){
         SaleEntity updatedSale = saleRepository.findById(id).get();
         updatedSale.setClient(sale.getClient());
@@ -87,7 +85,6 @@ public class SaleService {
         return saleRepository.save(updatedSale);
     }
 
-    //Delete sale by id
     public void deletesSale(long id){
         SaleEntity deletedSale = saleRepository.findById(id).get();
         saleRepository.delete(deletedSale);
@@ -101,9 +98,4 @@ public class SaleService {
         }
         return null;
     }
-
-
-    //total addition of sales, and amount of sales quantity
-
-
 }

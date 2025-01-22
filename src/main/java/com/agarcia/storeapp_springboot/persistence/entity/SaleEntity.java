@@ -23,8 +23,8 @@ public class SaleEntity {
     private Long id;
 
     private LocalDateTime dateSale;
-    private LocalDate daySale;
 
+    private LocalDate daySale;
     @ManyToMany
     @JoinTable(
             name = "sale_product",
