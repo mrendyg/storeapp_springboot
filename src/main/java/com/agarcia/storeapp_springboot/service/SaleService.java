@@ -36,18 +36,17 @@ public class SaleService {
 
     public SaleEntity createsSale(SaleEntity sale){
 
-        /*Check stock discount*/
-
-        //select the list
-        // Lista de productos seleccionados a partir de los IDs proporcionados
+        // List of products selected from the IDs provided
         List<ProductEntity> products = new ArrayList<>();
 
-        // Obtener los productos desde la base de datos usando solo el ID del producto
+        //Get the product from the db using the product id
         for (ProductEntity product : sale.getListProduct()) {
             ProductEntity productFromDb = productRepository.findById(product.getId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
             products.add(productFromDb);
         }
+
+
         //set total = 0 as base
         int totalPrice = 0;
         //addition price of each product
@@ -57,6 +56,7 @@ public class SaleService {
         //add total price
         sale.setTotal(totalPrice);
 
+        //remove stock of product that are on the list in -1
         List<ProductEntity> updateProduct = new ArrayList<>();
         for (ProductEntity product: products){
             int removeProduct = product.getStock() - 1;
