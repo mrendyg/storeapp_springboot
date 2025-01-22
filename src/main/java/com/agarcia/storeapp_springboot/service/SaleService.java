@@ -22,15 +22,17 @@ public class SaleService {
     @Autowired
     private ProductRepository productRepository;
 
-
+    //List of sale
     public List<SaleEntity> getsListSale(){
         return saleRepository.findAll();
     }
 
+    //Get Sale by id
     public SaleEntity getIdSale(long id){
         return saleRepository.findById(id).orElse(null);
     }
 
+    //Create new sale
     public SaleEntity createsSale(SaleEntity sale){
 
         // List of products selected from the IDs provided
@@ -38,8 +40,7 @@ public class SaleService {
 
         //Get the product from the db using the product id
         for (ProductEntity product : sale.getListProduct()) {
-            ProductEntity productFromDb = productRepository.findById(product.getId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+            ProductEntity productFromDb = productRepository.findById(product.getId()).orElse(null);
             products.add(productFromDb);
         }
 
@@ -56,9 +57,14 @@ public class SaleService {
         //remove stock of product that are on the list in -1
         List<ProductEntity> updateProduct = new ArrayList<>();
         for (ProductEntity product: products){
-            int removeProduct = product.getStock() - 1;
-            product.setStock(removeProduct);
-            productRepository.save(product);
+            if(product.getStock() >= 1){
+                int removeProduct = product.getStock() - 1;
+                product.setStock(removeProduct);
+                productRepository.save(product);
+            }
+            else {
+                System.out.println(product.getName() + " Out stock");
+            }
         }
 
         //add hours and date of creation time
@@ -67,6 +73,7 @@ public class SaleService {
         return saleRepository.save(sale);
     }
 
+    //Update sale by id
     public SaleEntity updatesSale(long id, SaleEntity sale){
         SaleEntity updatedSale = saleRepository.findById(id).get();
         updatedSale.setClient(sale.getClient());
@@ -75,6 +82,7 @@ public class SaleService {
         return saleRepository.save(updatedSale);
     }
 
+    //Delete sale by id
     public void deletesSale(long id){
         SaleEntity deletedSale = saleRepository.findById(id).get();
         saleRepository.delete(deletedSale);
