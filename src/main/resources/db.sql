@@ -34,7 +34,3 @@ INSERT INTO public.clients(
 	(6, '21.348.234-k', 'Josefina', 'Martinez'),
 	(7, '19.123.456-7', 'Antonella', 'Garcia');
 
-
-INSERT INTO public.sales(
-	id, date_sale, total, client_id)
-	VALUES (1, ,null, 800,1 );

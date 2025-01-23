@@ -96,4 +96,9 @@ public class SaleService {
         }
         return null;
     }
+
+
+    //total addition of sales, and amount of sales quantity
+
+
 }

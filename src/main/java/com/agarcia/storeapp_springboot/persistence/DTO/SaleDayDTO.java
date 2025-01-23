@@ -5,12 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StockProductDTO {
+public class SaleDayDTO {
 
-    private int stock;
+    private int totalSaleDay;
+    private LocalDateTime dateTimeSale;
 
 }
