@@ -68,7 +68,7 @@ public class SaleController {
     }
 
     //total addition of sales, and amount of sales quantity
-    @GetMapping("/date/{date}")
+    @PostMapping("/date/{date}")
     public List<SaleDayDTO> getSaleTotalDay(){
         List<SaleEntity> saleEntityList = saleRepository.findAll();
         List<SaleDayDTO> saleDayDTOList = new ArrayList<>();

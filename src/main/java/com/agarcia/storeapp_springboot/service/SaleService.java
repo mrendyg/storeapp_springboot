@@ -9,6 +9,7 @@ import com.agarcia.storeapp_springboot.persistence.repository.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,8 @@ public class SaleService {
     }
 
     //Create new sale
-    public SaleEntity createsSale(SaleEntity sale){
+    public SaleEntity
+    createsSale(SaleEntity sale){
 
         // List of products selected from the IDs provided
         List<ProductEntity> products = new ArrayList<>();
@@ -44,6 +46,8 @@ public class SaleService {
             products.add(productFromDb);
         }
 
+
+        //DEBO HACER UQ ECUANDO HAYA 0 STOCK NO PPERMITA LA VENTA DE ESE ITEM
 
         //set total = 0 as base
         int totalPrice = 0;
@@ -69,6 +73,7 @@ public class SaleService {
 
         //add hours and date of creation time
         sale.setDateSale(LocalDateTime.now());
+        sale.setDaySale(LocalDate.now());
 
         return saleRepository.save(sale);
     }
