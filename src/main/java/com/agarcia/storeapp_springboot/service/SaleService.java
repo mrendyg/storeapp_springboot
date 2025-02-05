@@ -7,12 +7,16 @@ import com.agarcia.storeapp_springboot.persistence.repository.ClientRepository;
 import com.agarcia.storeapp_springboot.persistence.repository.ProductRepository;
 import com.agarcia.storeapp_springboot.persistence.repository.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SaleService {
@@ -97,5 +101,30 @@ public class SaleService {
             return sale.getListProduct();
         }
         return null;
+    }
+
+    public ResponseEntity<Map<String, Object>> getTotalSaleDay(LocalDate daySale){
+
+        // Obtener todas las ventas
+        List<SaleEntity> allSales = saleRepository.findAll();
+
+        // Filtrar las ventas por la fecha proporcionada
+        List<SaleEntity> daySaleList = allSales.stream()
+                .filter(sale -> daySale.equals(sale.getDaySale()))
+                .collect(Collectors.toList());
+
+        // Calcular el total vendido
+        int totalSold = daySaleList.stream()
+                .flatMap(sale -> sale.getListProduct().stream()) // Suponiendo que SaleEntity tiene una lista de ProductEntity
+                .mapToInt(ProductEntity::getPrice)
+                .sum();
+
+        int totalSales = daySaleList.size();
+
+        // Crear la respuesta
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalSold", totalSold); // Total vendido para el día
+        response.put("totalSales", totalSales); //Total de ventas
+        return ResponseEntity.ok(response);
     }
 }

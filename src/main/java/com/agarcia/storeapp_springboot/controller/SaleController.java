@@ -73,29 +73,7 @@ public class SaleController {
     @GetMapping("/date/{daySale}")
     public ResponseEntity<Map<String, Object>> getDaySaleList(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate daySale) {
-
-        // Obtener todas las ventas
-        List<SaleEntity> allSales = saleRepository.findAll();
-
-        // Filtrar las ventas por la fecha proporcionada
-        List<SaleEntity> daySaleList = allSales.stream()
-                .filter(sale -> daySale.equals(sale.getDaySale()))
-                .collect(Collectors.toList());
-
-        // Calcular el total vendido
-        int totalSold = daySaleList.stream()
-                .flatMap(sale -> sale.getListProduct().stream()) // Suponiendo que SaleEntity tiene una lista de ProductEntity
-                .mapToInt(ProductEntity::getPrice)
-                .sum();
-
-        int totalSales = daySaleList.size();
-
-        // Crear la respuesta
-        Map<String, Object> response = new HashMap<>();
-        response.put("sales", daySaleList); // Lista de ventas para el día
-        response.put("totalSold", totalSold); // Total vendido para el día
-        response.put("totalSales", totalSales); //Total de ventas
-        return ResponseEntity.ok(response);
+        return saleService.getTotalSaleDay(daySale);
     }
 
 
