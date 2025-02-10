@@ -1,5 +1,6 @@
 package com.agarcia.storeapp_springboot.controller;
 
+import com.agarcia.storeapp_springboot.persistence.DTO.HighestSaleDTO;
 import com.agarcia.storeapp_springboot.persistence.entity.ProductEntity;
 import com.agarcia.storeapp_springboot.persistence.entity.SaleEntity;
 import com.agarcia.storeapp_springboot.persistence.repository.SaleRepository;
@@ -74,6 +75,13 @@ public class SaleController {
     public ResponseEntity<Map<String, Object>> getDaySaleList(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate daySale) {
         return saleService.getTotalSaleDay(daySale);
+    }
+
+
+    //Get id sale, total sale, quantity products, name client, lastname client of the highest sale
+    @GetMapping("/highestsale")
+    public HighestSaleDTO highestSale(){
+        return null;
     }
 
 
