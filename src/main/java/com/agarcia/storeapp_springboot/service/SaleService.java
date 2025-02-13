@@ -8,8 +8,10 @@ import com.agarcia.storeapp_springboot.persistence.repository.ClientRepository;
 import com.agarcia.storeapp_springboot.persistence.repository.ProductRepository;
 import com.agarcia.storeapp_springboot.persistence.repository.SaleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,7 +47,7 @@ public class SaleService {
         /*Check stock discount*/
 
         //select the list
-        // Lista de productos seleccionados a partir de los IDs proporcionados
+        // Product list of the products select
         List<ProductEntity> products = new ArrayList<>();
 
         // Obtener los productos desde la base de datos usando solo el ID del producto
@@ -82,6 +84,7 @@ public class SaleService {
         return saleRepository.save(sale);
     }
 
+    //Update sale by id
     public SaleEntity updatesSale(long id, SaleEntity sale){
         SaleEntity updatedSale = saleRepository.findById(id).get();
         updatedSale.setClient(sale.getClient());
@@ -90,6 +93,7 @@ public class SaleService {
         return saleRepository.save(updatedSale);
     }
 
+    //Delete sale by id
     public void deletesSale(long id){
         SaleEntity deletedSale = saleRepository.findById(id).get();
         saleRepository.delete(deletedSale);
@@ -104,29 +108,51 @@ public class SaleService {
         return null;
     }
 
+
+
     public ResponseEntity<Map<String, Object>> getTotalSaleDay(LocalDate daySale){
 
-        // Obtener todas las ventas
+        // Get all sales
         List<SaleEntity> allSales = saleRepository.findAll();
 
-        // Filtrar las ventas por la fecha proporcionada
+        // Filter sales by the date provided
         List<SaleEntity> daySaleList = allSales.stream()
                 .filter(sale -> daySale.equals(sale.getDaySale()))
                 .collect(Collectors.toList());
 
-        // Calcular el total vendido
+        // Calculate the total sold
         int totalSold = daySaleList.stream()
-                .flatMap(sale -> sale.getListProduct().stream()) // Suponiendo que SaleEntity tiene una lista de ProductEntity
+                .flatMap(sale -> sale.getListProduct().stream())
                 .mapToInt(ProductEntity::getPrice)
                 .sum();
 
         int totalSales = daySaleList.size();
 
-        // Crear la respuesta
+        // Create request
         Map<String, Object> response = new HashMap<>();
-        response.put("totalSold", totalSold); // Total vendido para el día
-        response.put("totalSales", totalSales); //Total de ventas
+        response.put("totalSold", totalSold); // Total sold for the day
+        response.put("totalSales", totalSales); //Total of sales
         return ResponseEntity.ok(response);
+    }
+
+
+
+    public HighestSaleDTO getsHighestSaleDTO(){
+
+        SaleEntity sale = saleRepository.findTopByOrderByTotalDesc();
+
+        if (sale == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No sales found");
+        }
+
+        HighestSaleDTO highestSaleDTO = new HighestSaleDTO();
+        highestSaleDTO.setIdSale(sale.getId());
+        highestSaleDTO.setTotalSale(sale.getTotal());
+        highestSaleDTO.setQuantityProducts(sale.getListProduct().size());
+        highestSaleDTO.setNameClient(sale.getClient().getName());
+        highestSaleDTO.setLastNameClient(sale.getClient().getLastName());
+
+        return highestSaleDTO;
     }
 
 }
