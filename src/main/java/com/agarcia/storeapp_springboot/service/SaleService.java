@@ -1,5 +1,6 @@
 package com.agarcia.storeapp_springboot.service;
 
+import com.agarcia.storeapp_springboot.persistence.DTO.HighestSaleDTO;
 import com.agarcia.storeapp_springboot.persistence.entity.ClientEntity;
 import com.agarcia.storeapp_springboot.persistence.entity.ProductEntity;
 import com.agarcia.storeapp_springboot.persistence.entity.SaleEntity;
@@ -127,4 +128,5 @@ public class SaleService {
         response.put("totalSales", totalSales); //Total de ventas
         return ResponseEntity.ok(response);
     }
+
 }

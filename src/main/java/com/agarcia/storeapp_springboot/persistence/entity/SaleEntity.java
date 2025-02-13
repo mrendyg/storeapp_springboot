@@ -25,6 +25,7 @@ public class SaleEntity {
     private LocalDateTime dateSale;
 
     private LocalDate daySale;
+
     @ManyToMany
     @JoinTable(
             name = "sale_product",
@@ -38,6 +39,5 @@ public class SaleEntity {
     @ManyToOne
     @JoinColumn(name = "client_id")
     private ClientEntity client;
-
 
 }

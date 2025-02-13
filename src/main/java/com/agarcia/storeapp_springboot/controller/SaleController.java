@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -79,11 +76,23 @@ public class SaleController {
 
 
     //Get id sale, total sale, quantity products, name client, lastname client of the highest sale
-    @GetMapping("/highestsale")
-    public HighestSaleDTO highestSale(){
-        return null;
+    @GetMapping("/highest-sale")
+    public HighestSaleDTO getHighestSale(){
+        SaleEntity sale = saleRepository.findTopByOrderByTotalDesc();
+
+        if (sale == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron ventas.");
+        }
+
+        HighestSaleDTO highestSaleDTO = new HighestSaleDTO();
+        highestSaleDTO.setIdSale(sale.getId());
+        highestSaleDTO.setTotalSale(sale.getTotal());
+        highestSaleDTO.setQuantityProducts(sale.getListProduct().size()); // Cantidad de productos
+        highestSaleDTO.setNameClient(sale.getClient().getName()); // Nombre del cliente
+        highestSaleDTO.setLastNameClient(sale.getClient().getLastName());
+
+        return highestSaleDTO;
+
     }
-
-
 
 }
