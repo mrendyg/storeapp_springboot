@@ -7,10 +7,12 @@ import com.agarcia.storeapp_springboot.persistence.entity.SaleEntity;
 import com.agarcia.storeapp_springboot.persistence.repository.ClientRepository;
 import com.agarcia.storeapp_springboot.persistence.repository.ProductRepository;
 import com.agarcia.storeapp_springboot.persistence.repository.SaleRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -30,17 +32,16 @@ public class SaleService {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    private ClientRepository clientRepository;
-
 
     public List<SaleEntity> getsListSale(){
         return saleRepository.findAll();
     }
 
+
     public SaleEntity getIdSale(long id){
         return saleRepository.findById(id).orElse(null);
     }
+
 
     public SaleEntity createsSale(SaleEntity sale){
 
@@ -68,7 +69,23 @@ public class SaleService {
         List<ProductEntity> updateProduct = new ArrayList<>();
         for (ProductEntity product: products){
             if(product.getStock() <= 0){
-                System.out.println("The product " + product.getName() + " is out of stock");
+                /*Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("timestamp", java.time.LocalDateTime.now().toString());
+                errorResponse.put("status", HttpStatus.CONFLICT.value());
+                errorResponse.put("error", HttpStatus.CONFLICT.getReasonPhrase());
+                errorResponse.put("message", "The product " + product.getName() +
+                        " is out of stock");
+                errorResponse.put("path", "/api/sale/create");
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                String jsonResponse = "";
+                try {
+                    jsonResponse = objectMapper.writeValueAsString(errorResponse);
+                } catch (Exception e){
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, jsonResponse);
+                }*/
+                throw  new ResponseStatusException(HttpStatus.CONFLICT, "The product" + product.getName() +
+                        " is out stock");
             }
             else {
                 int removeProduct = product.getStock() - 1;
@@ -84,6 +101,7 @@ public class SaleService {
         return saleRepository.save(sale);
     }
 
+
     //Update sale by id
     public SaleEntity updatesSale(long id, SaleEntity sale){
         SaleEntity updatedSale = saleRepository.findById(id).get();
@@ -93,11 +111,13 @@ public class SaleService {
         return saleRepository.save(updatedSale);
     }
 
+
     //Delete sale by id
     public void deletesSale(long id){
         SaleEntity deletedSale = saleRepository.findById(id).get();
         saleRepository.delete(deletedSale);
     }
+
 
     //Get the list of products of this sale
     public List<ProductEntity> getsDetailsProduct(long id){
