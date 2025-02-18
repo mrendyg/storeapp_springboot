@@ -10,11 +10,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/sale")
@@ -25,7 +24,6 @@ public class SaleController {
 
     @Autowired
     private SaleService saleService;
-
 
     //Get list sale
     @GetMapping("/list")
@@ -64,19 +62,21 @@ public class SaleController {
 
     //Get the list of products of this sale
     @GetMapping("/product-detail/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public List<ProductEntity> getListProductSale(@PathVariable long id){
         return saleService.getsDetailsProduct(id);
     }
 
     @GetMapping("/date/{daySale}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Map<String, Object>> getDaySaleList(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate daySale) {
         return saleService.getTotalSaleDay(daySale);
     }
 
-
     //Get id sale, total sale, quantity products, name client, lastname client of the highest sale
     @GetMapping("/highest-sale")
+    @ResponseStatus(HttpStatus.OK)
     public HighestSaleDTO getHighestSale(){
         return saleService.getsHighestSaleDTO();
     }

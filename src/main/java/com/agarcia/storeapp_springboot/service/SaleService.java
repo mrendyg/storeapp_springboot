@@ -1,18 +1,14 @@
 package com.agarcia.storeapp_springboot.service;
 
 import com.agarcia.storeapp_springboot.persistence.DTO.HighestSaleDTO;
-import com.agarcia.storeapp_springboot.persistence.entity.ClientEntity;
 import com.agarcia.storeapp_springboot.persistence.entity.ProductEntity;
 import com.agarcia.storeapp_springboot.persistence.entity.SaleEntity;
-import com.agarcia.storeapp_springboot.persistence.repository.ClientRepository;
 import com.agarcia.storeapp_springboot.persistence.repository.ProductRepository;
 import com.agarcia.storeapp_springboot.persistence.repository.SaleRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -32,25 +28,18 @@ public class SaleService {
     @Autowired
     private ProductRepository productRepository;
 
-
     public List<SaleEntity> getsListSale(){
         return saleRepository.findAll();
     }
-
 
     public SaleEntity getIdSale(long id){
         return saleRepository.findById(id).orElse(null);
     }
 
-
     public SaleEntity createsSale(SaleEntity sale){
-
-        /*Check stock discount*/
-
         //select the list
         // Product list of the products select
         List<ProductEntity> products = new ArrayList<>();
-
         // Obtener los productos desde la base de datos usando solo el ID del producto
         for (ProductEntity product : sale.getListProduct()) {
             ProductEntity productFromDb = productRepository.findById(product.getId())
@@ -111,13 +100,11 @@ public class SaleService {
         return saleRepository.save(updatedSale);
     }
 
-
     //Delete sale by id
     public void deletesSale(long id){
         SaleEntity deletedSale = saleRepository.findById(id).get();
         saleRepository.delete(deletedSale);
     }
-
 
     //Get the list of products of this sale
     public List<ProductEntity> getsDetailsProduct(long id){
@@ -128,10 +115,7 @@ public class SaleService {
         return null;
     }
 
-
-
     public ResponseEntity<Map<String, Object>> getTotalSaleDay(LocalDate daySale){
-
         // Get all sales
         List<SaleEntity> allSales = saleRepository.findAll();
 
@@ -147,15 +131,12 @@ public class SaleService {
                 .sum();
 
         int totalSales = daySaleList.size();
-
         // Create request
         Map<String, Object> response = new HashMap<>();
         response.put("totalSold", totalSold); // Total sold for the day
         response.put("totalSales", totalSales); //Total of sales
         return ResponseEntity.ok(response);
     }
-
-
 
     public HighestSaleDTO getsHighestSaleDTO(){
 
@@ -174,5 +155,4 @@ public class SaleService {
 
         return highestSaleDTO;
     }
-
 }
