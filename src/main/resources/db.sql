@@ -25,7 +25,7 @@ INSERT INTO public.products(
 	(12, 'Chocolate Rolls crocante', 1200,4, 5);
 
 INSERT INTO public.clients(
-	id, dni, last_name, name)
+	id, dni, name, last_name)
 	VALUES (1, '19.560.466-5', 'Andy', 'Garcia'),
 	(2, '20.237.104-3', 'Aracelly', 'Godoy'),
 	(3, '13.667.383-1', 'Belen', 'Oyarzo'),

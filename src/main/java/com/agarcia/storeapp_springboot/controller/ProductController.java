@@ -54,6 +54,7 @@ public class ProductController {
 
     //GetProduct low stock
     @GetMapping("/lowstock")
+    @ResponseStatus(HttpStatus.OK)
     public List<ProductEntity> getLowStockProduct(){
         int lowStock = 5;
 
