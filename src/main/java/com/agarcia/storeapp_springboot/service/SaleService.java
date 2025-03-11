@@ -28,10 +28,12 @@ public class SaleService {
     @Autowired
     private ProductRepository productRepository;
 
+    //List of sales
     public List<SaleEntity> getsListSale(){
         return saleRepository.findAll();
     }
 
+    // Get Sale by id
     public SaleEntity getIdSale(long id){
         return saleRepository.findById(id).orElse(null);
     }
@@ -60,18 +62,20 @@ public class SaleService {
         return null;
     }
 
+    //Create one sale
     public SaleEntity createsSale(SaleEntity sale){
         //select the list
         // Product list of the products select
         List<ProductEntity> products = new ArrayList<>();
         List<ProductEntity> updateProduct = new ArrayList<>();
 
-        // Obtener los productos desde la base de datos usando solo el ID del producto
+        // Get products from the database using only the product ID
         for (ProductEntity product : sale.getListProduct()) {
             ProductEntity productFromDb = productRepository.findById(product.getId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
             products.add(productFromDb);
         }
+
         //set total = 0 as base
         int totalPrice = 0;
         //addition price of each product
@@ -99,13 +103,14 @@ public class SaleService {
         return saleRepository.save(sale);
     }
 
+    // Total Sale by day
     public ResponseEntity<Map<String, Object>> getTotalSaleDay(LocalDate daySale){
         // Get all sales
         List<SaleEntity> allSales = saleRepository.findAll();
         // Filter sales by the date provided
         List<SaleEntity> daySaleList = allSales.stream()
                 .filter(sale -> daySale.equals(sale.getDaySale()))
-                .collect(Collectors.toList());
+                .toList();
 
         // Calculate the total sold
         int totalSold = daySaleList.stream()
@@ -121,21 +126,25 @@ public class SaleService {
         return ResponseEntity.ok(response);
     }
 
+    //Highest Sale
     public HighestSaleDTO getsHighestSaleDTO(){
         SaleEntity sale = saleRepository.findTopByOrderByTotalDesc();
 
         if (sale == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No sales found");
         }
+        else {
+            HighestSaleDTO highestSaleDTO = new HighestSaleDTO();
+            highestSaleDTO.setIdSale(sale.getId());
+            highestSaleDTO.setTotalSale(sale.getTotal());
+            highestSaleDTO.setQuantityProducts(sale.getListProduct().size());
+            highestSaleDTO.setNameClient(sale.getClient().getName());
+            highestSaleDTO.setLastNameClient(sale.getClient().getLastName());
 
-        HighestSaleDTO highestSaleDTO = new HighestSaleDTO();
-        highestSaleDTO.setIdSale(sale.getId());
-        highestSaleDTO.setTotalSale(sale.getTotal());
-        highestSaleDTO.setQuantityProducts(sale.getListProduct().size());
-        highestSaleDTO.setNameClient(sale.getClient().getName());
-        highestSaleDTO.setLastNameClient(sale.getClient().getLastName());
-
-        return highestSaleDTO;
+            return highestSaleDTO;
+        }
     }
+
+    //
 
 }
