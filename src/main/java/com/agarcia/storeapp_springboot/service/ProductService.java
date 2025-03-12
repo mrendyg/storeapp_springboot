@@ -5,9 +5,7 @@ import com.agarcia.storeapp_springboot.persistence.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ProductService {
@@ -57,7 +55,43 @@ public class ProductService {
         return listLowStock;
     }
 
+    //see the most economical products
+    public List<ProductEntity> getsLowPriceProduct(){
+        int lowPrice = 1000;
+
+        List<ProductEntity> listProduct = this.getsListProduct();
+        List<ProductEntity> lowPriceProduct = new ArrayList<ProductEntity>();
+
+        for(ProductEntity product : listProduct){
+            if (product.getPrice()<=lowPrice){
+                lowPriceProduct.add(product);
+            }
+        }
+        return lowPriceProduct;
+    }
+
+    //search from price indicating downwards
+    public List<ProductEntity> getsSearchPriceProduct(int price){
+        List<ProductEntity> listProduct = this.getsListProduct();
+        List<ProductEntity> listSearch = new ArrayList<ProductEntity>();
+
+        for(ProductEntity product : listProduct){
+            if (product.getPrice()<=price){
+                listSearch.add(product);
+            }
+        }
+
+        return listSearch;
+    }
+
     //ver los productos mas caros
+    public List<ProductEntity> getsHigherPrices(){
+        List<ProductEntity> products = productRepository.findAll();
+        //We sort the list by id
+        products.sort(Comparator.comparing(ProductEntity::getPrice).reversed());
+        return products;
+    }
 
     //Ver los productos mas vendidos
+
 }

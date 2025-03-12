@@ -1,13 +1,11 @@
 package com.agarcia.storeapp_springboot.controller;
 
 import com.agarcia.storeapp_springboot.persistence.entity.ProductEntity;
-import com.agarcia.storeapp_springboot.persistence.repository.ProductRepository;
 import com.agarcia.storeapp_springboot.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -59,11 +57,25 @@ public class ProductController {
         return productService.getsLowStockProduct();
     }
 
-    // ver los productos mas baratos
-    @GetMapping("lowprice")
+    // see the most economical products
+    @GetMapping("/lowprice")
+    @ResponseStatus(HttpStatus.OK)
     public List<ProductEntity> lowPriceProdutos(){
-        int lowPrice = 3000;
-        return null;
+        return productService.getsLowPriceProduct();
+    }
+
+    //search from price indicating downwards
+    @GetMapping("/price/{price}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductEntity> searchPrice(@PathVariable int price){
+       return productService.getsSearchPriceProduct(price);
+    }
+
+    //ver los productos mas caros
+    @GetMapping("/higherprice")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductEntity> higherPriceProduct(){
+        return productService.getsHigherPrices();
     }
 
 }
