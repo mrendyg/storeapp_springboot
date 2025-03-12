@@ -51,6 +51,5 @@ public class ClientController {
         clientService.deletesClient(id);
     }
 
-    //buscar todas las compras de un cliente
 
 }

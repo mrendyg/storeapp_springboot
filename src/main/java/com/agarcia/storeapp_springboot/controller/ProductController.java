@@ -71,7 +71,7 @@ public class ProductController {
        return productService.getsSearchPriceProduct(price);
     }
 
-    //ver los productos mas caros
+    //see the most expensive products
     @GetMapping("/higherprice")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductEntity> higherPriceProduct(){
