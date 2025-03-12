@@ -56,17 +56,14 @@ public class ProductController {
     @GetMapping("/lowstock")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductEntity> getLowStockProduct(){
-        int lowStock = 5;
+        return productService.getsLowStockProduct();
+    }
 
-        List<ProductEntity> listProduct = this.getListProduct();
-        List<ProductEntity> listLowStock = new ArrayList<ProductEntity>();
-
-        for(ProductEntity product: listProduct){
-            if(product.getStock() <= lowStock){
-                listLowStock.add(product);
-            }
-        }
-        return listLowStock;
+    // ver los productos mas baratos
+    @GetMapping("lowprice")
+    public List<ProductEntity> lowPriceProdutos(){
+        int lowPrice = 3000;
+        return null;
     }
 
 }

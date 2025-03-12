@@ -13,10 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +27,10 @@ public class SaleService {
 
     //List of sales
     public List<SaleEntity> getsListSale(){
-        return saleRepository.findAll();
+        List<SaleEntity> sales = saleRepository.findAll();
+        //We sort the list by id
+        sales.sort(Comparator.comparing(SaleEntity::getId));
+        return sales;
     }
 
     // Get Sale by id
@@ -140,11 +140,8 @@ public class SaleService {
             highestSaleDTO.setQuantityProducts(sale.getListProduct().size());
             highestSaleDTO.setNameClient(sale.getClient().getName());
             highestSaleDTO.setLastNameClient(sale.getClient().getLastName());
-
             return highestSaleDTO;
         }
     }
-
-    //
 
 }

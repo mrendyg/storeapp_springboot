@@ -5,6 +5,7 @@ import com.agarcia.storeapp_springboot.persistence.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -14,7 +15,10 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     public List<ClientEntity> getsListClient(){
-        return clientRepository.findAll();
+        List<ClientEntity> clients = clientRepository.findAll();
+        //We sort the list by id
+        clients.sort(Comparator.comparing(ClientEntity::getId));
+        return clients;
     }
 
     public ClientEntity getsIdClient(long id){
