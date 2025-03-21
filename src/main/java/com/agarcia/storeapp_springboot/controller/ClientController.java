@@ -51,5 +51,4 @@ public class ClientController {
         clientService.deletesClient(id);
     }
 
-
 }

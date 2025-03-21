@@ -86,21 +86,7 @@ public class SaleController {
     @GetMapping("/client/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<SaleEntity> getCustomerPurchases(@PathVariable long id) {
-        // Validar el ID
-        if (id <= 0) {
-            throw new IllegalArgumentException("ID de cliente no válido");
-        }
-
-        // Obtener todas las ventas desde el servicio
-        List<SaleEntity> allSales = saleService.getsListSale();
-
-        // Filtrar las compras del cliente usando streams
-        List<SaleEntity> customerPurchases = allSales.stream()
-                .filter(sale -> sale.getClient().getId() == id) // Comparar el ID del cliente
-                .collect(Collectors.toList());
-
-        // Si no hay compras, devolver una lista vacía
-        return customerPurchases;
+       return saleService.getsCustomerPurchanses(id);
     }
 
 }
